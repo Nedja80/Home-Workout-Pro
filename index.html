@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allenamento Casa PRO - TV Mode</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    #app {
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 20px;
+      padding: 30px;
+    }
+    
+    /* Header - spans all columns */
+    .header {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+    
+    /* Left panel - Stats */
+    .left-panel {
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .stat-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0, 212, 255, 0.3);
+    }
+    
+    .stat-label {
+      font-size: 1.3rem;
+      opacity: 0.7;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .stat-value {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #00d4ff;
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    }
+    
+    /* Center panel - Exercise animation and info */
+    .center-panel {
+      grid-column: 2;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 212, 255, 0.05);
+      border: 3px solid rgba(0, 212, 255, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+    }
+    
+    #exerciseName {
+      font-size: 3.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    #exerciseName.rest { color: #00ff88; }
+    #exerciseName.work { color: #00d4ff; }
+    
+    /* Canvas for animated character */
+    #exerciseCanvas {
+      width: 500px;
+      height: 500px;
+      margin: 2rem 0;
+    }
+    
+    #exerciseTime {
+      font-size: 6rem;
+      font-weight: bold;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+      margin-top: 2rem;
+    }
+    
+    #exerciseTime.warning { color: #ffaa00; }
+    #exerciseTime.critical { 
+      color: #ff4444;
+      animation: pulse 0.5s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    .reps-info {
+      font-size: 1.8rem;
+      color: #00d4ff;
+      font-style: italic;
+      margin-top: 1rem;
+    }
+    
+    /* Right panel - Next exercise and progress */
+    .right-panel {
+      grid-column: 3;
+      grid-row: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .next-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      flex: 1;
+    }
+    
+    .next-label {
+      font-size: 1.3rem;
+      opacity: 0.7;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+    
+    #nextExercise {
+      font-size: 1.8rem;
+      color: #00ff88;
+      font-weight: bold;
+    }
+    
+    .progress-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4ff 0%, #00ff88 100%);
+      transition: width 1s linear;
+      border-radius: 15px;
+    }
+    
+    /* Bottom controls */
+    .controls {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    button {
+      font-size: 1.8rem;
+      padding: 1.5rem 3rem;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      min-width: 200px;
+    }
+    
+    button:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    #startBtn {
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      color: #fff;
+    }
+    
+    #pauseBtn {
+      background: linear-gradient(135deg, #ffaa00 0%, #ff8800 100%);
+      color: #fff;
+    }
+    
+    #resetBtn {
+      background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+      color: #fff;
+    }
+    
+    .settings-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 20px;
+      font-size: 1.2rem;
+    }
+    
+    .settings-toggle label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+    
+    .settings-toggle input[type="checkbox"] {
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+    }
+    
+    .settings-toggle select {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .completion-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .completion-content {
+      text-align: center;
+      padding: 4rem;
+      background: rgba(0, 255, 136, 0.1);
+      border: 3px solid rgba(0, 255, 136, 0.5);
+      border-radius: 30px;
+      max-width: 800px;
+    }
+    
+    .completion-content h2 {
+      font-size: 4rem;
+      color: #00ff88;
+      margin-bottom: 2rem;
+    }
+    
+    .completion-content p {
+      font-size: 2rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-toggle">
+    <label>
+      <input type="checkbox" id="soundToggle" checked>
+      <span id="soundLabel">🔊 Suoni</span>
+    </label>
+    <label>
+      <input type="checkbox" id="musicToggle" checked>
+      <span id="musicLabel">🎵 Musica</span>
+    </label>
+    <label>
+      <span id="languageLabel">🌐</span>
+      <select id="languageSelect">
+        <option value="it">Italiano 🇮🇹</option>
+        <option value="en">English 🇬🇧</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="app">
+    <div class="header">
+      <h1 id="mainTitle">💪 ALLENAMENTO CASA PRO</h1>
+      <p id="subtitle" style="font-size: 1.5rem; opacity: 0.8;">Routine completa di 20 minuti</p>
+    </div>
+    
+    <div class="left-panel">
+      <div class="stat-box">
+        <div class="stat-label" id="totalTimeLabel">Tempo Totale</div>
+        <div class="stat-value" id="globalTime">20:00</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label" id="exerciseLabel">Esercizio</div>
+        <div class="stat-value" id="exerciseCounter">0/24</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label" id="completedLabel">Completati Oggi</div>
+        <div class="stat-value" id="todayCount">0</div>
+      </div>
+    </div>
+    
+    <div class="center-panel">
+      <div id="exerciseName" class="work">PREMI START</div>
+      <canvas id="exerciseCanvas" width="500" height="500"></canvas>
+      <div id="exerciseTime">00:00</div>
+      <div class="reps-info" id="repsInfo"></div>
+    </div>
+    
+    <div class="right-panel">
+      <div class="next-box">
+        <div class="next-label" id="nextLabel">⏭ PROSSIMO</div>
+        <div id="nextExercise">-</div>
+      </div>
+      <div class="progress-container">
+        <div class="stat-label">PROGRESSO</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div style="margin-top: 1rem; font-size: 1.5rem;" id="progressText">0%</div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button id="startBtn">▶ START</button>
+      <button id="pauseBtn" disabled>⏸ PAUSA</button>
+      <button id="resetBtn" disabled>↻ RESET</button>
+    </div>
+  </div>
+
+  <div class="completion-screen" id="completionScreen">
+    <div class="completion-content">
+      <h2 id="completionTitle">🎉 COMPLETATO!</h2>
+      <p id="completionMessage">Ottimo lavoro! Hai bruciato circa <strong>150-200 calorie</strong>!</p>
+      <p id="totalWorkoutsText" style="margin-top: 2rem;">Totale allenamenti: <strong id="totalWorkouts">0</strong></p>
+      <button onclick="document.getElementById('completionScreen').style.display='none'" 
+              style="margin-top: 3rem; font-size: 2rem;">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // TRADUZIONI
+    // ============================================
+    const translations = {
+      it: {
+        title: "💪 ALLENAMENTO CASA PRO",
+        subtitle: "Routine completa di 20 minuti",
+        totalTime: "Tempo Totale",
+        exercise: "Esercizio",
+        completedToday: "Completati Oggi",
+        next: "⏭ PROSSIMO",
+        progress: "PROGRESSO",
+        startButton: "▶ START",
+        pauseButton: "⏸ PAUSA",
+        resumeButton: "▶ RIPRENDI",
+        resetButton: "↻ RESET",
+        soundLabel: "🔊 Suoni",
+        musicLabel: "🎵 Musica",
+        pressStart: "PREMI START",
+        completed: "COMPLETATO! 🎉",
+        restart: "↻ RICOMINCIA",
+        lastExercise: "ULTIMO!",
+        completionTitle: "🎉 COMPLETATO!",
+        completionMessage: "Ottimo lavoro! Hai bruciato circa <strong>150-200 calorie</strong>!",
+        totalWorkoutsText: "Totale allenamenti:",
+        exercises: {
+          "warmup": { name: "Riscaldamento: Jumping Jack", reps: "30-40 ripetizioni" },
+          "rest": { name: "Riposo", reps: "" },
+          "squat": { name: "Squat", reps: "15-20 ripetizioni" },
+          "lunges": { name: "Affondi Alternati", reps: "10-12 per gamba" },
+          "pushup": { name: "Push-up", reps: "10-15 ripetizioni" },
+          "plank": { name: "Plank", reps: "mantieni la posizione" },
+          "mountain": { name: "Mountain Climbers", reps: "30-40 ripetizioni" },
+          "burpees": { name: "Burpees", reps: "8-12 ripetizioni" },
+          "crunch": { name: "Crunch Addominali", reps: "20-25 ripetizioni" },
+          "highknees": { name: "High Knees", reps: "40-50 ripetizioni" },
+          "bridge": { name: "Ponte Glutei", reps: "15-20 ripetizioni" },
+          "jumpjack": { name: "Jumping Jacks", reps: "30-40 ripetizioni" },
+          "superman": { name: "Superman", reps: "15-20 ripetizioni" },
+          "stretch": { name: "Defaticamento: Stretching", reps: "respira profondamente" }
+        }
+      },
+      en: {
+        title: "💪 HOME WORKOUT PRO",
+        subtitle: "Complete 20-minute routine",
+        totalTime: "Total Time",
+        exercise: "Exercise",
+        completedToday: "Completed Today",
+        next: "⏭ NEXT",
+        progress: "PROGRESS",
+        startButton: "▶ START",
+        pauseButton: "⏸ PAUSE",
+        resumeButton: "▶ RESUME",
+        resetButton: "↻ RESET",
+        soundLabel: "🔊 Sounds",
+        musicLabel: "🎵 Music",
+        pressStart: "PRESS START",
+        completed: "COMPLETED! 🎉",
+        restart: "↻ RESTART",
+        lastExercise: "LAST ONE!",
+        completionTitle: "🎉 COMPLETED!",
+        completionMessage: "Great job! You burned approximately <strong>150-200 calories</strong>!",
+        totalWorkoutsText: "Total workouts:",
+        exercises: {
+          "warmup": { name: "Warm-up: Jumping Jacks", reps: "30-40 reps" },
+          "rest": { name: "Rest", reps: "" },
+          "squat": { name: "Squats", reps: "15-20 reps" },
+          "lunges": { name: "Alternating Lunges", reps: "10-12 per leg" },
+          "pushup": { name: "Push-ups", reps: "10-15 reps" },
+          "plank": { name: "Plank", reps: "hold position" },
+          "mountain": { name: "Mountain Climbers", reps: "30-40 reps" },
+          "burpees": { name: "Burpees", reps: "8-12 reps" },
+          "crunch": { name: "Crunches", reps: "20-25 reps" },
+          "highknees": { name: "High Knees", reps: "40-50 reps" },
+          "bridge": { name: "Glute Bridge", reps: "15-20 reps" },
+          "jumpjack": { name: "Jumping Jacks", reps: "30-40 reps" },
+          "superman": { name: "Superman", reps: "15-20 reps" },
+          "stretch": { name: "Cool-down: Stretching", reps: "breathe deeply" }
+        }
+      }
+    };
+
+    let currentLang = 'it';
+
+    // ============================================
+    // ROUTINE DI ESERCIZI
+    // ============================================
+    const routine = [
+      { id: "warmup", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "squat", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "lunges", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "pushup", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "plank", duration: 30, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "mountain", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "burpees", duration: 30, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "crunch", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "highknees", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "bridge", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "jumpjack", duration: 40, isRest: false },
+      { id: "rest", duration: 20, isRest: true },
+      { id: "superman", duration: 30, isRest: false },
+      { id: "stretch", duration: 60, isRest: false }
+    ];
+
+    // ============================================
+    // ELEMENTI DOM
+    // ============================================
+    const elements = {
+      globalTime: document.getElementById("globalTime"),
+      exerciseName: document.getElementById("exerciseName"),
+      exerciseTime: document.getElementById("exerciseTime"),
+      repsInfo: document.getElementById("repsInfo"),
+      nextExercise: document.getElementById("nextExercise"),
+      exerciseCounter: document.getElementById("exerciseCounter"),
+      todayCount: document.getElementById("todayCount"),
+      progressBar: document.getElementById("progressBar"),
+      progressText: document.getElementById("progressText"),
+      startBtn: document.getElementById("startBtn"),
+      pauseBtn: document.getElementById("pauseBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      soundToggle: document.getElementById("soundToggle"),
+      musicToggle: document.getElementById("musicToggle"),
+      languageSelect: document.getElementById("languageSelect"),
+      canvas: document.getElementById("exerciseCanvas"),
+      completionScreen: document.getElementById("completionScreen")
+    };
+
+    const ctx = elements.canvas.getContext('2d');
+
+    // ============================================
+    // STATO DELL'APPLICAZIONE
+    // ============================================
+    let state = {
+      totalSeconds: routine.reduce((sum, ex) => sum + ex.duration, 0),
+      currentIndex: 0,
+      currentLeft: 0,
+      globalLeft: 0,
+      interval: null,
+      isPaused: false,
+      isRunning: false,
+      animationFrame: 0
+    };
+
+    // ============================================
+    // SISTEMA AUDIO
+    // ============================================
+    let audioContext = null;
+    let musicOscillators = [];
+    
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBeep(frequency = 800, duration = 0.15) {
+      if (!elements.soundToggle.checked) return;
+      initAudio();
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playDoubleBeep() {
+      playBeep(800, 0.1);
+      setTimeout(() => playBeep(1000, 0.1), 150);
+    }
+
+    function playTripleBeep() {
+      playBeep(600, 0.1);
+      setTimeout(() => playBeep(800, 0.1), 120);
+      setTimeout(() => playBeep(1200, 0.2), 240);
+    }
+
+    // Sistema musicale migliorato
+    let musicInterval = null;
+    
+    function startBackgroundMusic() {
+      if (!elements.musicToggle.checked) return;
+      
+      initAudio();
+      stopBackgroundMusic();
+      
+      const notes = [262, 330, 392, 330]; // C, E, G, E
+      let noteIndex = 0;
+      
+      musicInterval = setInterval(() => {
+        if (!elements.musicToggle.checked || !state.isRunning || state.isPaused) {
+          stopBackgroundMusic();
+          return;
+        }
+        
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc.frequency.value = notes[noteIndex];
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.3);
+        
+        noteIndex = (noteIndex + 1) % notes.length;
+      }, 400);
+    }
+    
+    function stopBackgroundMusic() {
+      if (musicInterval) {
+        clearInterval(musicInterval);
+        musicInterval = null;
+      }
+    }
+
+    // ============================================
+    // ANIMAZIONE PERSONAGGIO
+    // ============================================
+    function drawStickFigure(exerciseId) {
+      ctx.clearRect(0, 0, 500, 500);
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 12;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      
+      const centerX = 250;
+      const centerY = 250;
+      const frame = state.animationFrame;
+      
+      // Testa
+      ctx.beginPath();
+      ctx.arc(centerX, centerY - 120, 30, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      if (exerciseId === "rest") {
+        // Figura statica per riposo
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 90);
+        ctx.lineTo(centerX, centerY + 20);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60);
+        ctx.lineTo(centerX - 60, centerY);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60);
+        ctx.lineTo(centerX + 60, centerY);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX - 40, centerY + 100);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX + 40, centerY + 100);
+        ctx.stroke();
+        
+      } else if (exerciseId === "warmup" || exerciseId === "jumpjack") {
+        // Jumping Jack animation
+        const angle = Math.sin(frame * 0.2) * 0.6;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 90);
+        ctx.lineTo(centerX, centerY + 20);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60);
+        ctx.lineTo(centerX - 80 * Math.abs(Math.cos(angle)), centerY - 40 * Math.sin(angle));
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60);
+        ctx.lineTo(centerX + 80 * Math.abs(Math.cos(angle)), centerY - 40 * Math.sin(angle));
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX - 50 * Math.abs(Math.cos(angle)), centerY + 100);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX + 50 * Math.abs(Math.cos(angle)), centerY + 100);
+        ctx.stroke();
+        
+      } else if (exerciseId === "squat") {
+        // Squat animation
+        const squatDepth = Math.sin(frame * 0.15) * 40;
+        const bodyY = centerY + squatDepth;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 90 + squatDepth);
+        ctx.lineTo(centerX, bodyY);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60 + squatDepth);
+        ctx.lineTo(centerX - 70, centerY - 30 + squatDepth);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 60 + squatDepth);
+        ctx.lineTo(centerX + 70, centerY - 30 + squatDepth);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, bodyY);
+        ctx.lineTo(centerX - 50, bodyY + 60);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, bodyY);
+        ctx.lineTo(centerX + 50, bodyY + 60);
+        ctx.stroke();
+        
+      } else if (exerciseId === "lunges" || exerciseId === "highknees" || exerciseId === "mountain") {
+        // Running/lunges animation
+        const legAngle = Math.sin(frame * 0.25) * 0.8;
+        const armAngle = Math.sin(frame * 0.25) * 0.6;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 90);
+        ctx.lineTo(centerX, centerY + 20);
+        ctx.stroke();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY - 60);
+        ctx.rotate(-armAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-70, 40);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY - 60);
+        ctx.rotate(armAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(70, 40);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY + 20);
+        ctx.rotate(legAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-30, 80);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY + 20);
+        ctx.rotate(-legAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(30, 80);
+        ctx.stroke();
+        ctx.restore();
+        
+      } else if (exerciseId === "pushup" || exerciseId === "plank") {
+        // Plank/pushup position
+        const pushDepth = exerciseId === "pushup" ? Math.sin(frame * 0.2) * 15 : 0;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY + 50 + pushDepth);
+        ctx.rotate(-0.1);
+        
+        ctx.beginPath();
+        ctx.moveTo(-30, -40);
+        ctx.arc(0, -40, 30, Math.PI, 0);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-120, -10);
+        ctx.lineTo(120, -10);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-120, -10);
+        ctx.lineTo(-130, 30);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(120, -10);
+        ctx.lineTo(130, 30);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-100, -10);
+        ctx.lineTo(-120, 50);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(100, -10);
+        ctx.lineTo(120, 50);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+      } else if (exerciseId === "burpees") {
+        // Burpees - combinazione di movimenti
+        const cycle = (frame % 60) / 60;
+        
+        if (cycle < 0.33) {
+          // Standing
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY - 90);
+          ctx.lineTo(centerX, centerY + 20);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY - 60);
+          ctx.lineTo(centerX - 60, centerY);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY - 60);
+          ctx.lineTo(centerX + 60, centerY);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY + 20);
+          ctx.lineTo(centerX - 40, centerY + 100);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY + 20);
+          ctx.lineTo(centerX + 40, centerY + 100);
+          ctx.stroke();
+        } else {
+          // Plank position
+          ctx.save();
+          ctx.translate(centerX, centerY + 50);
+          ctx.rotate(-0.1);
+          
+          ctx.beginPath();
+          ctx.arc(0, -40, 30, Math.PI, 0);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(-120, -10);
+          ctx.lineTo(120, -10);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(-120, -10);
+          ctx.lineTo(-130, 30);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(120, -10);
+          ctx.lineTo(130, 30);
+          ctx.stroke();
+          
+          ctx.restore();
+        }
+        
+      } else if (exerciseId === "crunch") {
+        // Crunch animation
+        const crunchAngle = Math.sin(frame * 0.2) * 0.3;
+        
+        ctx.save();
+        ctx.translate(centerX + 80, centerY + 40);
+        ctx.rotate(1.57);
+        
+        ctx.beginPath();
+        ctx.arc(0, -40, 30, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        ctx.save();
+        ctx.rotate(crunchAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.lineTo(0, 80);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-60, 30);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(60, 30);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 80);
+        ctx.lineTo(-40, 140);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 80);
+        ctx.lineTo(40, 140);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+      } else if (exerciseId === "bridge") {
+        // Bridge position
+        ctx.save();
+        ctx.translate(centerX, centerY + 100);
+        
+        ctx.beginPath();
+        ctx.arc(-80, -80, 30, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.arc(-80, -80, 30, 0, Math.PI);
+        ctx.moveTo(-110, -80);
+        ctx.lineTo(-30, 0);
+        ctx.lineTo(30, 0);
+        ctx.lineTo(110, -80);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-110, -80);
+        ctx.lineTo(-130, -40);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(110, -80);
+        ctx.lineTo(130, -40);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-30, 0);
+        ctx.lineTo(-50, 50);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(30, 0);
+        ctx.lineTo(50, 50);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+      } else if (exerciseId === "superman") {
+        // Superman position
+        const wave = Math.sin(frame * 0.15) * 10;
+        
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        
+        ctx.beginPath();
+        ctx.arc(-80, -20 + wave, 30, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-80, 10 + wave);
+        ctx.lineTo(100, 0);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-50, -10 + wave);
+        ctx.lineTo(-120, -40 + wave);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(-50, -10 + wave);
+        ctx.lineTo(-120, 20 + wave);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(80, -10);
+        ctx.lineTo(130, -30);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(80, 0);
+        ctx.lineTo(130, 20);
+        ctx.stroke();
+        
+        ctx.restore();
+        
+      } else if (exerciseId === "stretch") {
+        // Stretching pose
+        const stretchAngle = Math.sin(frame * 0.1) * 0.2;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 90);
+        ctx.lineTo(centerX, centerY + 20);
+        ctx.stroke();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY - 60);
+        ctx.rotate(stretchAngle - 0.5);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-90, -30);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(centerX, centerY - 60);
+        ctx.rotate(-stretchAngle + 0.5);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(90, -30);
+        ctx.stroke();
+        ctx.restore();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX - 40, centerY + 100);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY + 20);
+        ctx.lineTo(centerX + 40, centerY + 100);
+        ctx.stroke();
+      }
+      
+      state.animationFrame++;
+    }
+
+    // Avvia animazione continua
+    function animate() {
+      if (state.isRunning && !state.isPaused) {
+        const currentExercise = routine[state.currentIndex];
+        if (currentExercise) {
+          drawStickFigure(currentExercise.id);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ============================================
+    // FUNZIONI UTILITY
+    // ============================================
+    function format(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function updateProgress() {
+      const totalDuration = state.totalSeconds;
+      const elapsed = totalDuration - state.globalLeft;
+      const percentage = Math.round((elapsed / totalDuration) * 100);
+      elements.progressBar.style.width = `${percentage}%`;
+      elements.progressText.textContent = `${percentage}%`;
+    }
+
+    function showExercise(index) {
+      const ex = routine[index];
+      const t = translations[currentLang];
+      const exerciseData = t.exercises[ex.id];
+      
+      elements.exerciseName.textContent = exerciseData.name.toUpperCase();
+      elements.exerciseName.className = ex.isRest ? 'rest' : 'work';
+      elements.repsInfo.textContent = exerciseData.reps;
+      state.currentLeft = ex.duration;
+      elements.exerciseTime.textContent = format(state.currentLeft);
+      elements.globalTime.textContent = format(state.globalLeft);
+      elements.exerciseCounter.textContent = `${index + 1}/${routine.length}`;
+
+      const next = routine[index + 1];
+      if (next) {
+        const nextData = t.exercises[next.id];
+        elements.nextExercise.textContent = nextData.name.toUpperCase();
+      } else {
+        elements.nextExercise.textContent = t.lastExercise;
+      }
+
+      updateProgress();
+      drawStickFigure(ex.id);
+      playDoubleBeep();
+    }
+
+    function tick() {
+      if (state.isPaused) return;
+
+      if (state.currentLeft === 3 || state.currentLeft === 2 || state.currentLeft === 1) {
+        playBeep(600 + state.currentLeft * 100, 0.1);
+      }
+
+      elements.exerciseTime.classList.remove('warning', 'critical');
+      if (state.currentLeft <= 3) {
+        elements.exerciseTime.classList.add('critical');
+      } else if (state.currentLeft <= 10) {
+        elements.exerciseTime.classList.add('warning');
+      }
+
+      if (state.currentLeft <= 0) {
+        state.currentIndex++;
+        if (state.currentIndex >= routine.length) {
+          completeWorkout();
+          return;
+        }
+        showExercise(state.currentIndex);
+      } else {
+        state.currentLeft--;
+        state.globalLeft--;
+        elements.exerciseTime.textContent = format(state.currentLeft);
+        elements.globalTime.textContent = format(state.globalLeft);
+        updateProgress();
+      }
+    }
+
+    function completeWorkout() {
+      clearInterval(state.interval);
+      state.isRunning = false;
+      stopBackgroundMusic();
+      
+      const t = translations[currentLang];
+      
+      playTripleBeep();
+      
+      saveWorkoutCompletion();
+      updateTodayCount();
+      
+      elements.completionScreen.style.display = 'flex';
+      document.getElementById('completionTitle').textContent = t.completionTitle;
+      document.getElementById('completionMessage').innerHTML = t.completionMessage;
+      document.getElementById('totalWorkoutsText').innerHTML = 
+        `${t.totalWorkoutsText} <strong id="totalWorkouts">${getTotalWorkouts()}</strong>`;
+      
+      elements.startBtn.disabled = false;
+      elements.startBtn.textContent = t.restart;
+      elements.pauseBtn.disabled = true;
+      elements.resetBtn.disabled = false;
+      
+      drawStickFigure("rest");
+    }
+
+    function startWorkout() {
+      if (state.isRunning && !state.isPaused) return;
+
+      if (!state.isRunning) {
+        clearInterval(state.interval);
+        state.totalSeconds = routine.reduce((s, ex) => s + ex.duration, 0);
+        state.globalLeft = state.totalSeconds;
+        state.currentIndex = 0;
+        showExercise(0);
+        elements.completionScreen.style.display = 'none';
+      }
+
+      state.isRunning = true;
+      state.isPaused = false;
+      
+      const t = translations[currentLang];
+      elements.startBtn.disabled = true;
+      elements.pauseBtn.disabled = false;
+      elements.pauseBtn.textContent = t.pauseButton;
+      elements.resetBtn.disabled = false;
+      
+      state.interval = setInterval(tick, 1000);
+      startBackgroundMusic();
+    }
+
+    function pauseWorkout() {
+      const t = translations[currentLang];
+      if (!state.isPaused) {
+        state.isPaused = true;
+        clearInterval(state.interval);
+        stopBackgroundMusic();
+        elements.pauseBtn.textContent = t.resumeButton;
+        playBeep(400, 0.2);
+      } else {
+        state.isPaused = false;
+        elements.pauseBtn.textContent = t.pauseButton;
+        state.interval = setInterval(tick, 1000);
+        startBackgroundMusic();
+        playBeep(800, 0.2);
+      }
+    }
+
+    function resetWorkout() {
+      clearInterval(state.interval);
+      stopBackgroundMusic();
+      state.isRunning = false;
+      state.isPaused = false;
+      state.currentIndex = 0;
+      state.globalLeft = state.totalSeconds;
+      
+      const t = translations[currentLang];
+      elements.exerciseName.textContent = t.pressStart;
+      elements.exerciseName.className = 'work';
+      elements.exerciseTime.textContent = "00:00";
+      elements.repsInfo.textContent = "";
+      elements.globalTime.textContent = format(state.totalSeconds);
+      elements.nextExercise.textContent = "-";
+      elements.exerciseCounter.textContent = `0/${routine.length}`;
+      elements.progressBar.style.width = "0%";
+      elements.progressText.textContent = "0%";
+      elements.exerciseTime.classList.remove('warning', 'critical');
+      elements.completionScreen.style.display = 'none';
+      
+      elements.startBtn.disabled = false;
+      elements.startBtn.textContent = t.startButton;
+      elements.pauseBtn.disabled = true;
+      elements.pauseBtn.textContent = t.pauseButton;
+      elements.resetBtn.disabled = true;
+      
+      drawStickFigure("rest");
+    }
+
+    // ============================================
+    // GESTIONE STATISTICHE
+    // ============================================
+    function saveWorkoutCompletion() {
+      const today = new Date().toDateString();
+      const stats = JSON.parse(localStorage.getItem('workoutStats') || '{}');
+      
+      if (!stats[today]) {
+        stats[today] = 0;
+      }
+      stats[today]++;
+      
+      localStorage.setItem('workoutStats', JSON.stringify(stats));
+    }
+
+    function getTodayWorkouts() {
+      const today = new Date().toDateString();
+      const stats = JSON.parse(localStorage.getItem('workoutStats') || '{}');
+      return stats[today] || 0;
+    }
+
+    function getTotalWorkouts() {
+      const stats = JSON.parse(localStorage.getItem('workoutStats') || '{}');
+      return Object.values(stats).reduce((sum, count) => sum + count, 0);
+    }
+
+    function updateTodayCount() {
+      elements.todayCount.textContent = getTodayWorkouts();
+    }
+
+    // ============================================
+    // GESTIONE LINGUA
+    // ============================================
+    function updateLanguage() {
+      const t = translations[currentLang];
+      
+      document.getElementById('mainTitle').textContent = t.title;
+      document.getElementById('subtitle').textContent = t.subtitle;
+      document.getElementById('totalTimeLabel').textContent = t.totalTime;
+      document.getElementById('exerciseLabel').textContent = t.exercise;
+      document.getElementById('completedLabel').textContent = t.completedToday;
+      document.getElementById('nextLabel').textContent = t.next;
+      document.querySelector('.progress-container .stat-label').textContent = t.progress;
+      
+      if (!state.isRunning) {
+        elements.startBtn.textContent = t.startButton;
+      } else {
+        elements.startBtn.textContent = t.restart;
+      }
+      
+      if (state.isPaused) {
+        elements.pauseBtn.textContent = t.resumeButton;
+      } else {
+        elements.pauseBtn.textContent = t.pauseButton;
+      }
+      
+      elements.resetBtn.textContent = t.resetButton;
+      
+      document.getElementById('soundLabel').textContent = t.soundLabel;
+      document.getElementById('musicLabel').textContent = t.musicLabel;
+      
+      if (!state.isRunning) {
+        elements.exerciseName.textContent = t.pressStart;
+      } else if (state.currentIndex < routine.length) {
+        showExercise(state.currentIndex);
+      }
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    elements.startBtn.addEventListener("click", startWorkout);
+    elements.pauseBtn.addEventListener("click", pauseWorkout);
+    elements.resetBtn.addEventListener("click", resetWorkout);
+
+    elements.languageSelect.addEventListener("change", (e) => {
+      currentLang = e.target.value;
+      updateLanguage();
+    });
+
+    elements.musicToggle.addEventListener("change", () => {
+      if (!elements.musicToggle.checked) {
+        stopBackgroundMusic();
+      } else if (state.isRunning && !state.isPaused) {
+        startBackgroundMusic();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (!state.isRunning) {
+          startWorkout();
+        } else {
+          pauseWorkout();
+        }
+      } else if (e.code === 'Escape') {
+        resetWorkout();
+      }
+    });
+
+    // ============================================
+    // INIZIALIZZAZIONE
+    // ============================================
+    state.globalLeft = state.totalSeconds;
+    elements.globalTime.textContent = format(state.totalSeconds);
+    elements.exerciseCounter.textContent = `0/${routine.length}`;
+    updateTodayCount();
+    drawStickFigure("rest");
+  </script>
+</body>
+</html>
