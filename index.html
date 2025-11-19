@@ -2,13 +2,13 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Workout TV Pro</title>
+  <title>Workout PRO - Personaggio 2D Professionale</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #000;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       overflow: hidden;
     }
     #app {
@@ -25,11 +25,17 @@
     }
     .header h1 {
       font-size: 4vh;
-      color: #00d4ff;
+      background: linear-gradient(90deg, #00d4ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 0.5vh;
+      font-weight: 900;
+      letter-spacing: 2px;
     }
     .header p {
       font-size: 2vh;
+      opacity: 0.8;
     }
     .main {
       display: flex;
@@ -44,64 +50,96 @@
       gap: 1vh;
     }
     .box {
-      background: rgba(0, 212, 255, 0.15);
-      border: 3px solid #00d4ff;
-      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05));
+      border: 2px solid rgba(0, 212, 255, 0.5);
+      border-radius: 15px;
       padding: 2vh 1vw;
       text-align: center;
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      backdrop-filter: blur(10px);
     }
     .label {
-      font-size: 1.8vh;
+      font-size: 1.6vh;
       opacity: 0.7;
       margin-bottom: 0.5vh;
-      font-weight: bold;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .value {
-      font-size: 4vh;
-      font-weight: bold;
-      color: #00d4ff;
+      font-size: 4.5vh;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00d4ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .center {
       flex: 1;
-      background: rgba(0, 212, 255, 0.1);
-      border: 4px solid #00d4ff;
-      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 212, 255, 0.03));
+      border: 3px solid rgba(0, 212, 255, 0.4);
+      border-radius: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 1vh;
+      padding: 2vh;
       min-height: 0;
+      position: relative;
+      backdrop-filter: blur(10px);
     }
     #exName {
       font-size: 3.5vh;
-      font-weight: bold;
+      font-weight: 900;
       margin-bottom: 1vh;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
-    #exName.work { color: #00d4ff; }
-    #exName.rest { color: #00ff88; }
-    canvas {
-      width: 30vh;
-      height: 30vh;
-      max-width: 400px;
-      max-height: 400px;
+    #exName.work { 
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+    #exName.rest { 
+      background: linear-gradient(135deg, #00ff88, #00cc66);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    #characterCanvas {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+    }
+    
     #exTime {
-      font-size: 8vh;
-      font-weight: bold;
+      font-size: 10vh;
+      font-weight: 900;
       margin: 1vh 0;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
     }
-    #exTime.warn { color: #ffaa00; }
-    #exTime.crit { color: #ff4444; animation: blink 0.5s infinite; }
-    @keyframes blink { 50% { opacity: 0.6; } }
+    #exTime.warn { 
+      color: #ffaa00;
+      text-shadow: 0 0 30px rgba(255, 170, 0, 0.8);
+    }
+    #exTime.crit { 
+      color: #ff4444;
+      animation: blink 0.5s infinite;
+      text-shadow: 0 0 30px rgba(255, 68, 68, 0.8);
+    }
+    @keyframes blink { 50% { opacity: 0.7; transform: scale(1.05); } }
+    
     #reps {
-      font-size: 2.5vh;
+      font-size: 2.2vh;
       color: #00d4ff;
       font-style: italic;
+      font-weight: 600;
     }
     .right {
       width: 18vw;
@@ -110,50 +148,54 @@
       gap: 1vh;
     }
     .nextbox {
-      background: rgba(0, 255, 136, 0.15);
-      border: 3px solid #00ff88;
-      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
+      border: 2px solid rgba(0, 255, 136, 0.5);
+      border-radius: 15px;
       padding: 2vh 1vw;
       flex: 1;
       display: flex;
       flex-direction: column;
+      backdrop-filter: blur(10px);
     }
     #next {
-      font-size: 2vh;
+      font-size: 1.9vh;
       color: #00ff88;
-      font-weight: bold;
+      font-weight: 700;
       margin-top: 1vh;
-      line-height: 1.3;
+      line-height: 1.4;
     }
     .progbox {
-      background: rgba(255, 255, 255, 0.1);
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
       padding: 2vh 1vw;
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      backdrop-filter: blur(10px);
     }
     .bar {
       width: 100%;
-      height: 2.5vh;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 1.25vh;
+      height: 3vh;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 1.5vh;
       overflow: hidden;
       margin-top: 1vh;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
     }
     .fill {
       height: 100%;
       background: linear-gradient(90deg, #00d4ff, #00ff88);
       width: 0%;
       transition: width 1s;
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
     }
     #pct {
-      margin-top: 0.5vh;
+      margin-top: 0.8vh;
       font-size: 2.5vh;
       text-align: center;
-      font-weight: bold;
+      font-weight: 700;
     }
     .btns {
       display: flex;
@@ -163,36 +205,27 @@
       padding: 1vh 0;
     }
     button {
-      font-size: 2.5vh;
-      padding: 1.5vh 4vw;
+      font-size: 2.2vh;
+      padding: 1.8vh 4vw;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s;
+      font-weight: 900;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     button:hover:not(:disabled) { 
-      transform: scale(1.05); 
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     }
-    button:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-    button:disabled { 
-      opacity: 0.3; 
-      cursor: not-allowed;
-    }
-    .btn1 { 
-      background: linear-gradient(135deg, #00d4ff, #0099cc); 
-      color: #fff; 
-    }
-    .btn2 { 
-      background: linear-gradient(135deg, #ffaa00, #ff8800); 
-      color: #fff; 
-    }
-    .btn3 { 
-      background: linear-gradient(135deg, #ff4444, #cc0000); 
-      color: #fff; 
-    }
+    button:active:not(:disabled) { transform: translateY(0); }
+    button:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn1 { background: linear-gradient(135deg, #00d4ff, #0099cc); color: #fff; }
+    .btn2 { background: linear-gradient(135deg, #ffaa00, #ff8800); color: #fff; }
+    .btn3 { background: linear-gradient(135deg, #ff4444, #cc0000); color: #fff; }
+    
     .settings {
       position: fixed;
       top: 1vh;
@@ -202,24 +235,31 @@
       z-index: 100;
     }
     .settings label {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8);
       padding: 0.8vh 1.5vw;
-      border-radius: 8px;
-      border: 2px solid #00d4ff;
-      font-size: 1.6vh;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 212, 255, 0.5);
+      font-size: 1.5vh;
       display: flex;
       align-items: center;
       gap: 0.5vw;
       cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+    .settings label:hover {
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.1);
     }
     .settings select {
       padding: 0.8vh 1.5vw;
-      border-radius: 8px;
-      font-size: 1.6vh;
-      background: #111;
+      border-radius: 10px;
+      font-size: 1.5vh;
+      background: rgba(0, 0, 0, 0.8);
       color: #fff;
-      border: 2px solid #00d4ff;
+      border: 2px solid rgba(0, 212, 255, 0.5);
       cursor: pointer;
+      backdrop-filter: blur(10px);
     }
     .done {
       position: fixed;
@@ -232,18 +272,24 @@
       align-items: center;
       justify-content: center;
       z-index: 200;
+      backdrop-filter: blur(10px);
     }
     .done.show { display: flex; }
     .done-box {
-      background: rgba(0, 255, 136, 0.2);
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
       border: 4px solid #00ff88;
       border-radius: 30px;
       padding: 60px 100px;
       text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
     }
     .done-box h2 {
       font-size: 80px;
-      color: #00ff88;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00ff88, #00cc66);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 30px;
     }
     .done-box p {
@@ -264,40 +310,40 @@
 
   <div id="app">
     <div class="header">
-      <h1>💪 ALLENAMENTO CASA PRO</h1>
-      <p>Routine completa di 20 minuti</p>
+      <h1>💪 WORKOUT PROFESSIONAL 2D</h1>
+      <p>Personaggio animato con movimento fluido e preciso</p>
     </div>
     
     <div class="main">
       <div class="left">
         <div class="box">
-          <div class="label">TEMPO TOTALE</div>
+          <div class="label">Tempo Totale</div>
           <div class="value" id="totTime">20:00</div>
         </div>
         <div class="box">
-          <div class="label">ESERCIZIO</div>
+          <div class="label">Esercizio</div>
           <div class="value" id="exNum">0/37</div>
         </div>
         <div class="box">
-          <div class="label">OGGI</div>
+          <div class="label">Oggi</div>
           <div class="value" id="today">0</div>
         </div>
       </div>
       
       <div class="center">
         <div id="exName" class="work">PREMI START</div>
-        <canvas id="cv" width="500" height="500"></canvas>
+        <canvas id="characterCanvas"></canvas>
         <div id="exTime">00:00</div>
         <div id="reps"></div>
       </div>
       
       <div class="right">
         <div class="nextbox">
-          <div class="label">⏭ PROSSIMO</div>
+          <div class="label">⏭ Prossimo</div>
           <div id="next">-</div>
         </div>
         <div class="progbox">
-          <div class="label">PROGRESSO</div>
+          <div class="label">Progresso</div>
           <div class="bar">
             <div class="fill" id="prog"></div>
           </div>
@@ -318,14 +364,13 @@
       <h2>🎉 COMPLETATO!</h2>
       <p>Ottimo lavoro!<br>Hai bruciato circa <strong>150-200 calorie</strong>!</p>
       <p>Totale: <strong id="totW">0</strong> allenamenti</p>
-      <button class="btn1" style="margin-top:40px;" id="closeBtn">OK</button>
+      <button class="btn1" style="margin-top:40px;font-size:2rem;padding:1.5rem 3rem;" id="closeBtn">OK</button>
     </div>
   </div>
 
   <script>
-    console.log('🚀 App avviata');
+    console.log('🚀 App 2D Professional avviata');
     
-    // ESERCIZI - 37 totali per 20 minuti ESATTI
     const EXERCISES = [
       {id:'w',dur:50},{id:'r',dur:20},
       {id:'s',dur:45},{id:'r',dur:20},
@@ -349,12 +394,11 @@
     ];
 
     const TOTAL_TIME = EXERCISES.reduce((sum, ex) => sum + ex.dur, 0);
-    console.log('✅ Tempo totale:', TOTAL_TIME, 'secondi =', Math.floor(TOTAL_TIME/60), 'minuti');
 
     const NAMES = {
       it: {
         w:['Riscaldamento: Jumping Jack','30-40 ripetizioni'],
-        r:['Riposo',''],
+        r:['Riposo','Respira e recupera'],
         s:['Squat','15-20 ripetizioni'],
         l:['Affondi Alternati','10-12 per gamba'],
         p:['Push-up','10-15 ripetizioni'],
@@ -370,7 +414,7 @@
       },
       en: {
         w:['Warm-up: Jumping Jacks','30-40 reps'],
-        r:['Rest',''],
+        r:['Rest','Breathe and recover'],
         s:['Squats','15-20 reps'],
         l:['Alternating Lunges','10-12 per leg'],
         p:['Push-ups','10-15 reps'],
@@ -387,31 +431,33 @@
     };
 
     let lang = 'it';
-    const canvas = document.getElementById('cv');
-    const ctx = canvas.getContext('2d');
-
     let state = {
       currentIndex: 0,
       timeLeft: 0,
       globalTimeLeft: TOTAL_TIME,
       timer: null,
       isPaused: false,
-      isRunning: false,
-      animFrame: 0
+      isRunning: false
     };
+
+    const canvas = document.getElementById('characterCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     let audioCtx = null;
     let musicTimer = null;
 
-    function getEl(id) {
-      return document.getElementById(id);
-    }
+    function getEl(id) { return document.getElementById(id); }
 
     function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        console.log('🔊 Audio inizializzato');
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
     function beep(freq, dur) {
@@ -451,194 +497,503 @@
         osc.stop(audioCtx.currentTime + 0.3);
         idx = (idx + 1) % notes.length;
       }, 400);
-      console.log('🎵 Musica avviata');
     }
 
     function stopMusic() {
       if (musicTimer) {
         clearInterval(musicTimer);
         musicTimer = null;
-        console.log('🎵 Musica fermata');
       }
     }
 
-    function drawFigure(exId) {
-      ctx.clearRect(0, 0, 500, 500);
-      ctx.strokeStyle = '#00d4ff';
-      ctx.lineWidth = 12;
-      ctx.lineCap = 'round';
-      const cx = 250, cy = 250, f = state.animFrame;
-
-      ctx.beginPath();
-      ctx.arc(cx, cy-120, 30, 0, Math.PI*2);
-      ctx.stroke();
-
-      function line(x1,y1,x2,y2) {
-        ctx.beginPath();
-        ctx.moveTo(x1,y1);
-        ctx.lineTo(x2,y2);
-        ctx.stroke();
+    // ========================================
+    // PERSONAGGIO 2D PROFESSIONALE
+    // ========================================
+    class Character {
+      constructor() {
+        this.time = 0;
+        this.colors = {
+          skin: '#FFD1A4',
+          hair: '#8B4513',
+          shirt: '#FF6B6B',
+          pants: '#4A90E2',
+          shoes: '#333333',
+          glow: 'rgba(0, 212, 255, 0.3)'
+        };
       }
 
-      if (exId === 'r') {
-        line(cx, cy-90, cx, cy+20);
-        line(cx, cy-60, cx-60, cy);
-        line(cx, cy-60, cx+60, cy);
-        line(cx, cy+20, cx-40, cy+100);
-        line(cx, cy+20, cx+40, cy+100);
-      } else if (exId === 'w' || exId === 'j') {
-        const a = Math.sin(f*0.2)*0.6;
-        line(cx, cy-90, cx, cy+20);
-        line(cx, cy-60, cx-80*Math.abs(Math.cos(a)), cy-40*Math.sin(a));
-        line(cx, cy-60, cx+80*Math.abs(Math.cos(a)), cy-40*Math.sin(a));
-        line(cx, cy+20, cx-50*Math.abs(Math.cos(a)), cy+100);
-        line(cx, cy+20, cx+50*Math.abs(Math.cos(a)), cy+100);
-      } else if (exId === 's') {
-        const d = Math.sin(f*0.15)*40;
-        line(cx, cy-90+d, cx, cy+20+d);
-        line(cx, cy-60+d, cx-70, cy-20+d);
-        line(cx, cy-60+d, cx+70, cy-20+d);
-        line(cx, cy+20+d, cx-50, cy+90+d);
-        line(cx, cy+20+d, cx+50, cy+90+d);
-      } else if (exId === 'l' || exId === 'h' || exId === 'm') {
-        const a = Math.sin(f*0.25)*0.7;
-        line(cx, cy-90, cx, cy+20);
-        ctx.save();
-        ctx.translate(cx, cy-60);
-        ctx.rotate(-a*0.8);
-        line(0,0,-70,40);
-        ctx.restore();
-        ctx.save();
-        ctx.translate(cx, cy-60);
-        ctx.rotate(a*0.8);
-        line(0,0,70,40);
-        ctx.restore();
-        ctx.save();
-        ctx.translate(cx, cy+20);
-        ctx.rotate(a);
-        line(0,0,-30,80);
-        ctx.restore();
-        ctx.save();
-        ctx.translate(cx, cy+20);
-        ctx.rotate(-a);
-        line(0,0,30,80);
-        ctx.restore();
-      } else if (exId === 'p' || exId === 'k') {
-        const d = exId==='p' ? Math.sin(f*0.2)*15 : 0;
-        ctx.save();
-        ctx.translate(cx, cy+50+d);
-        ctx.rotate(-0.1);
-        ctx.beginPath();
-        ctx.arc(0,-40,30,Math.PI,0);
-        ctx.stroke();
-        line(-120,-15,120,-15);
-        line(-120,-15,-130,25);
-        line(120,-15,130,25);
-        line(-100,-15,-120,50);
-        line(100,-15,120,50);
-        ctx.restore();
-      } else if (exId === 'b') {
-        const p = (f%60)/60;
-        if (p < 0.5) {
-          line(cx, cy-90, cx, cy+20);
-          line(cx, cy-60, cx-60, cy);
-          line(cx, cy-60, cx+60, cy);
-          line(cx, cy+20, cx-40, cy+100);
-          line(cx, cy+20, cx+40, cy+100);
-        } else {
-          ctx.save();
-          ctx.translate(cx, cy+50);
-          ctx.rotate(-0.1);
-          ctx.beginPath();
-          ctx.arc(0,-40,30,Math.PI,0);
-          ctx.stroke();
-          line(-120,-15,120,-15);
-          line(-120,-15,-130,25);
-          line(120,-15,130,25);
-          ctx.restore();
-        }
-      } else if (exId === 'c') {
-        const a = Math.sin(f*0.2)*0.3;
-        ctx.save();
-        ctx.translate(cx+80, cy+40);
-        ctx.rotate(1.57);
-        ctx.beginPath();
-        ctx.arc(0,-40,30,0,Math.PI*2);
-        ctx.stroke();
-        ctx.save();
-        ctx.rotate(a);
-        line(0,-10,0,80);
-        ctx.restore();
-        line(0,0,-60,30);
-        line(0,0,60,30);
-        line(0,80,-40,140);
-        line(0,80,40,140);
-        ctx.restore();
-      } else if (exId === 'g') {
-        ctx.save();
-        ctx.translate(cx, cy+100);
-        ctx.beginPath();
-        ctx.arc(-80,-90,30,0,Math.PI*2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(-80,-90,30,0,Math.PI);
-        ctx.moveTo(-115,-90);
-        ctx.lineTo(-30,0);
-        ctx.lineTo(30,0);
-        ctx.lineTo(115,-90);
-        ctx.stroke();
-        line(-115,-90,-135,-45);
-        line(115,-90,135,-45);
-        line(-30,0,-50,55);
-        line(30,0,50,55);
-        ctx.restore();
-      } else if (exId === 'u') {
-        const w = Math.sin(f*0.15)*10;
+      drawSmooth(ex) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        const scale = Math.min(w, h) / 600;
+        const t = this.time * 0.001;
+
+        ctx.clearRect(0, 0, w, h);
         ctx.save();
         ctx.translate(cx, cy);
+        ctx.scale(scale, scale);
+
+        // Ombra
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
         ctx.beginPath();
-        ctx.arc(-90,-25+w,30,0,Math.PI*2);
+        ctx.ellipse(0, 140, 80, 15, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (ex === 'r') {
+          this.drawRest(t);
+        } else if (ex === 'w' || ex === 'j') {
+          this.drawJumpingJack(t);
+        } else if (ex === 's') {
+          this.drawSquat(t);
+        } else if (ex === 'l' || ex === 'h' || ex === 'm') {
+          this.drawRunning(t);
+        } else if (ex === 'p') {
+          this.drawPushUp(t);
+        } else if (ex === 'k') {
+          this.drawPlank(t);
+        } else if (ex === 'b') {
+          this.drawBurpees(t);
+        } else if (ex === 'c') {
+          this.drawCrunch(t);
+        } else if (ex === 'g') {
+          this.drawBridge(t);
+        } else if (ex === 'u') {
+          this.drawSuperman(t);
+        } else if (ex === 't') {
+          this.drawStretch(t);
+        } else {
+          this.drawRest(t);
+        }
+
+        ctx.restore();
+        this.time += 16;
+      }
+
+      drawBody(x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.roundRect(x - w/2, y - h/2, w, h, 10);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.lineWidth = 2;
         ctx.stroke();
-        line(-90,5+w, 110,-5);
-        line(-55,-15+w, -130,-45+w);
-        line(-55,-15+w, -130,15+w);
-        line(90,-15, 145,-35);
-        line(90,-5, 145,15);
-        ctx.restore();
-      } else if (exId === 't') {
-        const s = Math.sin(f*0.1)*0.2;
-        line(cx, cy-90, cx, cy+20);
-        ctx.save();
-        ctx.translate(cx, cy-60);
-        ctx.rotate(s-0.5);
-        line(0,0,-90,-35);
-        ctx.restore();
-        ctx.save();
-        ctx.translate(cx, cy-60);
-        ctx.rotate(-s+0.5);
-        line(0,0,90,-35);
-        ctx.restore();
-        line(cx, cy+20, cx-40, cy+100);
-        line(cx, cy+20, cx+40, cy+100);
-      } else {
-        line(cx, cy-90, cx, cy+20);
-        line(cx, cy-60, cx-60, cy);
-        line(cx, cy-60, cx+60, cy);
-        line(cx, cy+20, cx-40, cy+100);
-        line(cx, cy+20, cx+40, cy+100);
       }
 
-      state.animFrame++;
+      drawCircle(x, y, r, color) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      drawLimb(x1, y1, x2, y2, width, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        
+        // Glow effect
+        ctx.strokeStyle = this.colors.glow;
+        ctx.lineWidth = width + 4;
+        ctx.globalAlpha = 0.3;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      drawRest(t) {
+        const breathe = Math.sin(t * 2) * 3;
+        
+        // Head
+        this.drawCircle(0, -110 + breathe, 30, this.colors.skin);
+        // Eyes
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-10, -115 + breathe, 5, 8);
+        ctx.fillRect(5, -115 + breathe, 5, 8);
+        // Smile
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, -105 + breathe, 12, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+        
+        // Body
+        this.drawBody(0, -40 + breathe, 50, 80, this.colors.shirt);
+        
+        // Arms relaxed
+        this.drawLimb(-25, -60 + breathe, -50, -10 + breathe, 14, this.colors.skin);
+        this.drawLimb(-50, -10 + breathe, -55, 20 + breathe, 12, this.colors.skin);
+        this.drawCircle(-55, 20 + breathe, 10, this.colors.skin);
+        
+        this.drawLimb(25, -60 + breathe, 50, -10 + breathe, 14, this.colors.skin);
+        this.drawLimb(50, -10 + breathe, 55, 20 + breathe, 12, this.colors.skin);
+        this.drawCircle(55, 20 + breathe, 10, this.colors.skin);
+        
+        // Legs
+        this.drawLimb(-15, 5, -25, 80, 18, this.colors.pants);
+        this.drawLimb(-25, 80, -30, 135, 16, this.colors.skin);
+        this.drawBody(-30, 140, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(15, 5, 25, 80, 18, this.colors.pants);
+        this.drawLimb(25, 80, 30, 135, 16, this.colors.skin);
+        this.drawBody(30, 140, 22, 12, this.colors.shoes);
+      }
+
+      drawJumpingJack(t) {
+        const phase = Math.sin(t * 4);
+        const open = Math.abs(phase);
+        const jump = Math.abs(phase) * 20;
+        
+        // Head
+        this.drawCircle(0, -110 - jump, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-10, -115 - jump, 5, 8);
+        ctx.fillRect(5, -115 - jump, 5, 8);
+        
+        // Body
+        this.drawBody(0, -40 - jump, 50, 80, this.colors.shirt);
+        
+        // Arms - opening
+        const armX = 70 * open;
+        const armY = -50 * open;
+        this.drawLimb(-25, -60 - jump, -50 - armX, -30 - jump + armY, 14, this.colors.skin);
+        this.drawLimb(-50 - armX, -30 - jump + armY, -60 - armX, armY - jump, 12, this.colors.skin);
+        this.drawCircle(-60 - armX, armY - jump, 10, this.colors.skin);
+        
+        this.drawLimb(25, -60 - jump, 50 + armX, -30 - jump + armY, 14, this.colors.skin);
+        this.drawLimb(50 + armX, -30 - jump + armY, 60 + armX, armY - jump, 12, this.colors.skin);
+        this.drawCircle(60 + armX, armY - jump, 10, this.colors.skin);
+        
+        // Legs - opening
+        const legX = 40 * open;
+        this.drawLimb(-15, 5 - jump, -25 - legX, 80 - jump, 18, this.colors.pants);
+        this.drawLimb(-25 - legX, 80 - jump, -30 - legX, 135, 16, this.colors.skin);
+        this.drawBody(-30 - legX, 140, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(15, 5 - jump, 25 + legX, 80 - jump, 18, this.colors.pants);
+        this.drawLimb(25 + legX, 80 - jump, 30 + legX, 135, 16, this.colors.skin);
+        this.drawBody(30 + legX, 140, 22, 12, this.colors.shoes);
+      }
+
+      drawSquat(t) {
+        const depth = Math.sin(t * 3) * 0.5 + 0.5;
+        const down = depth * 50;
+        
+        // Head
+        this.drawCircle(0, -110 + down, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-10, -115 + down, 5, 8);
+        ctx.fillRect(5, -115 + down, 5, 8);
+        
+        // Body
+        this.drawBody(0, -40 + down, 50, 80, this.colors.shirt);
+        
+        // Arms forward
+        this.drawLimb(-25, -60 + down, -70, -20 + down, 14, this.colors.skin);
+        this.drawLimb(-70, -20 + down, -100, -15 + down, 12, this.colors.skin);
+        this.drawCircle(-100, -15 + down, 10, this.colors.skin);
+        
+        this.drawLimb(25, -60 + down, 70, -20 + down, 14, this.colors.skin);
+        this.drawLimb(70, -20 + down, 100, -15 + down, 12, this.colors.skin);
+        this.drawCircle(100, -15 + down, 10, this.colors.skin);
+        
+        // Legs bent
+        const kneeY = 50 + down;
+        this.drawLimb(-15, 5 + down, -25, kneeY, 18, this.colors.pants);
+        this.drawLimb(-25, kneeY, -30, 135, 16, this.colors.skin);
+        this.drawBody(-30, 140, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(15, 5 + down, 25, kneeY, 18, this.colors.pants);
+        this.drawLimb(25, kneeY, 30, 135, 16, this.colors.skin);
+        this.drawBody(30, 140, 22, 12, this.colors.shoes);
+      }
+
+      drawRunning(t) {
+        const phase = Math.sin(t * 5);
+        const bob = Math.abs(phase) * 10;
+        
+        // Head
+        this.drawCircle(0, -110 - bob, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-10, -115 - bob, 5, 8);
+        ctx.fillRect(5, -115 - bob, 5, 8);
+        
+        // Body leaning
+        this.drawBody(5, -40 - bob, 50, 80, this.colors.shirt);
+        
+        // Arms alternating
+        const armSwing = phase * 40;
+        this.drawLimb(-20, -60 - bob, -40 - armSwing, -15 - bob, 14, this.colors.skin);
+        this.drawLimb(-40 - armSwing, -15 - bob, -50 - armSwing, 20 - bob, 12, this.colors.skin);
+        this.drawCircle(-50 - armSwing, 20 - bob, 10, this.colors.skin);
+        
+        this.drawLimb(30, -60 - bob, 50 + armSwing, -15 - bob, 14, this.colors.skin);
+        this.drawLimb(50 + armSwing, -15 - bob, 60 + armSwing, 20 - bob, 12, this.colors.skin);
+        this.drawCircle(60 + armSwing, 20 - bob, 10, this.colors.skin);
+        
+        // Legs alternating
+        const legAngle = phase * 50;
+        this.drawLimb(-10, 5 - bob, -15 - legAngle, 80 - bob, 18, this.colors.pants);
+        this.drawLimb(-15 - legAngle, 80 - bob, -20 - legAngle, 135, 16, this.colors.skin);
+        this.drawBody(-20 - legAngle, 140, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(20, 5 - bob, 25 + legAngle, 80 - bob, 18, this.colors.pants);
+        this.drawLimb(25 + legAngle, 80 - bob, 30 + legAngle, 135, 16, this.colors.skin);
+        this.drawBody(30 + legAngle, 140, 22, 12, this.colors.shoes);
+      }
+
+      drawPushUp(t) {
+        const push = Math.sin(t * 3) * 15;
+        
+        ctx.save();
+        ctx.translate(0, 80 + push);
+        ctx.rotate(-0.15);
+        
+        // Head
+        this.drawCircle(-80, -40, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-85, -45, 5, 8);
+        
+        // Body
+        this.drawBody(-20, -30, 90, 50, this.colors.shirt);
+        
+        // Arms
+        this.drawLimb(-60, -20, -90, 10, 16, this.colors.skin);
+        this.drawLimb(-90, 10, -110, 40, 14, this.colors.skin);
+        this.drawCircle(-110, 40, 12, this.colors.skin);
+        
+        this.drawLimb(30, -20, 60, 10, 16, this.colors.skin);
+        this.drawLimb(60, 10, 80, 40, 14, this.colors.skin);
+        this.drawCircle(80, 40, 12, this.colors.skin);
+        
+        // Legs
+        this.drawLimb(40, -10, 80, -5, 18, this.colors.pants);
+        this.drawLimb(80, -5, 110, 0, 16, this.colors.skin);
+        this.drawBody(115, 0, 20, 14, this.colors.shoes);
+        
+        ctx.restore();
+      }
+
+      drawPlank(t) {
+        ctx.save();
+        ctx.translate(0, 80);
+        ctx.rotate(-0.15);
+        
+        // Head
+        this.drawCircle(-80, -40, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-85, -45, 5, 8);
+        
+        // Body
+        this.drawBody(-20, -30, 90, 50, this.colors.shirt);
+        
+        // Arms
+        this.drawLimb(-60, -20, -90, 10, 16, this.colors.skin);
+        this.drawLimb(-90, 10, -110, 40, 14, this.colors.skin);
+        this.drawCircle(-110, 40, 12, this.colors.skin);
+        
+        this.drawLimb(30, -20, 60, 10, 16, this.colors.skin);
+        this.drawLimb(60, 10, 80, 40, 14, this.colors.skin);
+        this.drawCircle(80, 40, 12, this.colors.skin);
+        
+        // Legs
+        this.drawLimb(40, -10, 80, -5, 18, this.colors.pants);
+        this.drawLimb(80, -5, 110, 0, 16, this.colors.skin);
+        this.drawBody(115, 0, 20, 14, this.colors.shoes);
+        
+        ctx.restore();
+      }
+
+      drawBurpees(t) {
+        const cycle = (t * 1.5) % 2;
+        if (cycle < 1) {
+          this.drawJumpingJack(t);
+        } else {
+          this.drawPlank(t);
+        }
+      }
+
+      drawCrunch(t) {
+        const crunch = Math.sin(t * 3) * 0.5 + 0.5;
+        
+        ctx.save();
+        ctx.translate(80, 60);
+        ctx.rotate(1.57);
+        
+        // Head
+        this.drawCircle(0, -50, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-5, -55, 5, 8);
+        
+        // Body with crunch
+        ctx.save();
+        ctx.rotate(crunch * 0.5);
+        this.drawBody(0, 30, 50, 80, this.colors.shirt);
+        
+        // Legs
+        this.drawLimb(0, 70, -30, 120, 18, this.colors.pants);
+        this.drawLimb(-30, 120, -40, 160, 16, this.colors.skin);
+        this.drawBody(-40, 165, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(0, 70, 30, 120, 18, this.colors.pants);
+        this.drawLimb(30, 120, 40, 160, 16, this.colors.skin);
+        this.drawBody(40, 165, 22, 12, this.colors.shoes);
+        ctx.restore();
+        
+        // Arms
+        this.drawLimb(0, -20, -50, -30, 14, this.colors.skin);
+        this.drawCircle(-50, -30, 10, this.colors.skin);
+        
+        this.drawLimb(0, -20, 50, -30, 14, this.colors.skin);
+        this.drawCircle(50, -30, 10, this.colors.skin);
+        
+        ctx.restore();
+      }
+
+      drawBridge(t) {
+        ctx.save();
+        ctx.translate(0, 110);
+        
+        // Head
+        this.drawCircle(-75, -100, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-80, -105, 5, 8);
+        
+        // Body arched
+        ctx.strokeStyle = this.colors.shirt;
+        ctx.lineWidth = 50;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(-50, -80);
+        ctx.quadraticCurveTo(0, -110, 50, -80);
+        ctx.stroke();
+        
+        // Arms
+        this.drawLimb(-50, -80, -80, -40, 14, this.colors.skin);
+        this.drawLimb(-80, -40, -90, 0, 12, this.colors.skin);
+        this.drawCircle(-90, 0, 10, this.colors.skin);
+        
+        this.drawLimb(50, -80, 80, -40, 14, this.colors.skin);
+        this.drawLimb(80, -40, 90, 0, 12, this.colors.skin);
+        this.drawCircle(90, 0, 10, this.colors.skin);
+        
+        // Legs
+        this.drawLimb(-15, -70, -35, -15, 18, this.colors.pants);
+        this.drawLimb(-35, -15, -45, 25, 16, this.colors.skin);
+        this.drawBody(-45, 30, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(15, -70, 35, -15, 18, this.colors.pants);
+        this.drawLimb(35, -15, 45, 25, 16, this.colors.skin);
+        this.drawBody(45, 30, 22, 12, this.colors.shoes);
+        
+        ctx.restore();
+      }
+
+      drawSuperman(t) {
+        const wave = Math.sin(t * 2) * 10;
+        
+        ctx.save();
+        ctx.translate(-40, 30);
+        ctx.rotate(-0.2);
+        
+        // Head
+        this.drawCircle(-50, -40 + wave, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-55, -45 + wave, 5, 8);
+        
+        // Body
+        this.drawBody(20, -20 + wave * 0.7, 90, 45, this.colors.shirt);
+        
+        // Arms forward
+        this.drawLimb(-20, -30 + wave, -70, -55 + wave, 14, this.colors.skin);
+        this.drawLimb(-70, -55 + wave, -110, -65 + wave, 12, this.colors.skin);
+        this.drawCircle(-110, -65 + wave, 10, this.colors.skin);
+        
+        this.drawLimb(-20, -10 + wave, -70, -30 + wave, 14, this.colors.skin);
+        this.drawLimb(-70, -30 + wave, -110, -40 + wave, 12, this.colors.skin);
+        this.drawCircle(-110, -40 + wave, 10, this.colors.skin);
+        
+        // Legs back
+        this.drawLimb(70, -10 + wave * 0.5, 110, -25 + wave * 0.3, 18, this.colors.pants);
+        this.drawLimb(110, -25 + wave * 0.3, 145, -30 + wave * 0.2, 16, this.colors.skin);
+        this.drawBody(150, -30 + wave * 0.2, 20, 14, this.colors.shoes);
+        
+        this.drawLimb(70, 10 + wave * 0.5, 110, 5 + wave * 0.3, 18, this.colors.pants);
+        this.drawLimb(110, 5 + wave * 0.3, 145, 0 + wave * 0.2, 16, this.colors.skin);
+        this.drawBody(150, 0 + wave * 0.2, 20, 14, this.colors.shoes);
+        
+        ctx.restore();
+      }
+
+      drawStretch(t) {
+        const stretch = Math.sin(t * 1.5) * 0.15;
+        
+        // Head
+        this.drawCircle(0, -110, 30, this.colors.skin);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-10, -115, 5, 8);
+        ctx.fillRect(5, -115, 5, 8);
+        // Smile
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, -105, 12, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+        
+        // Body
+        this.drawBody(0, -40, 50, 80, this.colors.shirt);
+        
+        // Arms stretched up
+        ctx.save();
+        ctx.translate(-25, -60);
+        ctx.rotate(stretch - 0.6);
+        this.drawLimb(0, 0, -50, -60, 14, this.colors.skin);
+        this.drawLimb(-50, -60, -60, -100, 12, this.colors.skin);
+        this.drawCircle(-60, -100, 10, this.colors.skin);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(25, -60);
+        ctx.rotate(-stretch + 0.6);
+        this.drawLimb(0, 0, 50, -60, 14, this.colors.skin);
+        this.drawLimb(50, -60, 60, -100, 12, this.colors.skin);
+        this.drawCircle(60, -100, 10, this.colors.skin);
+        ctx.restore();
+        
+        // Legs
+        this.drawLimb(-15, 5, -25, 80, 18, this.colors.pants);
+        this.drawLimb(-25, 80, -30, 135, 16, this.colors.skin);
+        this.drawBody(-30, 140, 22, 12, this.colors.shoes);
+        
+        this.drawLimb(15, 5, 25, 80, 18, this.colors.pants);
+        this.drawLimb(25, 80, 30, 135, 16, this.colors.skin);
+        this.drawBody(30, 140, 22, 12, this.colors.shoes);
+      }
     }
 
-    function animate() {
+    const character = new Character();
+
+    function animateCharacter() {
       if (state.isRunning && !state.isPaused) {
-        drawFigure(EXERCISES[state.currentIndex].id);
+        const currentEx = EXERCISES[state.currentIndex];
+        character.drawSmooth(currentEx.id);
+      } else {
+        character.drawSmooth('r');
       }
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animateCharacter);
     }
-    animate();
+    animateCharacter();
 
+    // ========================================
+    // RESTO CODICE (gestione timer, audio, etc.)
+    // ========================================
     function formatTime(sec) {
       const m = Math.floor(sec/60);
       const s = sec%60;
@@ -702,15 +1057,9 @@
     }
 
     function startWorkout() {
-      console.log('▶️ START cliccato');
-      
-      if (state.isRunning && !state.isPaused) {
-        console.log('⚠️ Già in esecuzione');
-        return;
-      }
+      if (state.isRunning && !state.isPaused) return;
       
       if (!state.isRunning) {
-        console.log('🆕 Nuovo allenamento');
         state.currentIndex = 0;
         state.globalTimeLeft = TOTAL_TIME;
         state.timeLeft = EXERCISES[0].dur;
@@ -726,33 +1075,25 @@
       
       state.timer = setInterval(tick, 1000);
       startMusic();
-      
-      console.log('✅ Allenamento avviato');
     }
 
     function pauseWorkout() {
-      console.log('⏸️ PAUSE cliccato');
-      
       if (!state.isPaused) {
         state.isPaused = true;
         clearInterval(state.timer);
         stopMusic();
         getEl('pauseBtn').textContent = '▶ RIPRENDI';
         beep(400, 0.2);
-        console.log('⏸️ In pausa');
       } else {
         state.isPaused = false;
         getEl('pauseBtn').textContent = '⏸ PAUSA';
         state.timer = setInterval(tick, 1000);
         startMusic();
         beep(800, 0.2);
-        console.log('▶️ Ripreso');
       }
     }
 
     function resetWorkout() {
-      console.log('↻ RESET cliccato');
-      
       clearInterval(state.timer);
       stopMusic();
       state.isRunning = false;
@@ -777,14 +1118,9 @@
       getEl('pauseBtn').disabled = true;
       getEl('pauseBtn').textContent = '⏸ PAUSA';
       getEl('resetBtn').disabled = true;
-      
-      drawFigure('r');
-      console.log('↻ Reset completato');
     }
 
     function finishWorkout() {
-      console.log('🏁 Allenamento completato!');
-      
       clearInterval(state.timer);
       stopMusic();
       state.isRunning = false;
@@ -802,8 +1138,6 @@
       getEl('startBtn').disabled = false;
       getEl('pauseBtn').disabled = true;
       getEl('resetBtn').disabled = false;
-      
-      drawFigure('r');
     }
 
     function saveWorkout() {
@@ -811,7 +1145,6 @@
       const stats = JSON.parse(localStorage.getItem('workouts') || '{}');
       stats[today] = (stats[today] || 0) + 1;
       localStorage.setItem('workouts', JSON.stringify(stats));
-      console.log('💾 Allenamento salvato');
     }
 
     function getTodayWorkouts() {
@@ -829,47 +1162,24 @@
       getEl('today').textContent = getTodayWorkouts();
     }
 
-    // EVENT LISTENERS
-    console.log('📝 Registrazione event listeners...');
-    
-    getEl('startBtn').addEventListener('click', function() {
-      console.log('👆 Click su START rilevato');
-      startWorkout();
-    });
-    
-    getEl('pauseBtn').addEventListener('click', function() {
-      console.log('👆 Click su PAUSE rilevato');
-      pauseWorkout();
-    });
-    
-    getEl('resetBtn').addEventListener('click', function() {
-      console.log('👆 Click su RESET rilevato');
-      resetWorkout();
-    });
-    
-    getEl('closeBtn').addEventListener('click', function() {
-      getEl('doneScreen').classList.remove('show');
-    });
+    getEl('startBtn').addEventListener('click', startWorkout);
+    getEl('pauseBtn').addEventListener('click', pauseWorkout);
+    getEl('resetBtn').addEventListener('click', resetWorkout);
+    getEl('closeBtn').addEventListener('click', () => getEl('doneScreen').classList.remove('show'));
 
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', e => {
       if (e.code === 'Space') {
         e.preventDefault();
-        if (!state.isRunning) {
-          startWorkout();
-        } else {
-          pauseWorkout();
-        }
+        if (!state.isRunning) startWorkout();
+        else pauseWorkout();
       } else if (e.code === 'Escape') {
         resetWorkout();
       }
     });
 
-    // INIT
-    console.log('🎬 Inizializzazione completata');
     getEl('totTime').textContent = formatTime(TOTAL_TIME);
     updateToday();
-    drawFigure('r');
-    console.log('✅ App pronta! Premi START per iniziare');
+    console.log('✅ Personaggio 2D Professional pronto!');
   </script>
 </body>
 </html>
